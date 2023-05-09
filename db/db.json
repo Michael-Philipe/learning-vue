@@ -77,5 +77,18 @@
       "tipo": "Finalizado"
     }
   ],
-  "burgers": []
+  "burgers": [
+    {
+      "nome": "henrique",
+      "carne": "Maminha",
+      "pao": "3 Queijos",
+      "opcionais": [
+        "Tomate",
+        "Cebola roxa",
+        "Bacon"
+      ],
+      "status": "Em produção",
+      "id": 1
+    }
+  ]
 }

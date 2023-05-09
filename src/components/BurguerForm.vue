@@ -1,11 +1,11 @@
 <template>
    <div>
-    <p>Componente mensagem</p>
+    <Message :msg="msg" v-show="msg"/>
     <div>
-        <form id="burger-form">
+        <form id="burger-form" @submit.prevent="createBurger">
             <div class="input-container">
                 <label for="name">Nome do cliente</label>
-                <input type="text" id="nome" name="name" v-model="name" placeholder="Digite seu nome">
+                <input type="text" id="nome" name="name" v-model="nome" placeholder="Digite seu nome">
             </div>
             <div class="input-container">
                 <label for="pao">escolha seu pão</label>
@@ -43,22 +43,21 @@
 </template>
   
   <script>
-  
+  import Message from '@/components/Message.vue'
   
   export default {
    
 
     data(){
         return {
-            paes: null,
-            carnes: null,
+            paes: '',
+            carnes: '',
             opcionaisData: null,
-            nome: null,
-            pao: null,
-            carne: null,
+            nome: '',
+            pao: '',
+            carne: '',
             opcionais: [],
-            status: 'Solicitado',
-            msg: null
+            msg: ''
         }
 
     },
@@ -73,17 +72,56 @@
 
             
         },
-        // async createBurguer(e) {
+        async createBurger() {
             
-        // }
+
+            const data = {
+              nome: this.nome,
+              carne: this.carne,
+              pao: this.pao,
+              opcionais: Array.from(this.opcionais),
+              status: "Soliciado"
+            }
+
+            const dataJson = JSON.stringify(data)
+
+            const req = await fetch("http://localhost:3000/burgers",{
+              method: 'POST',
+              headers: {'Content-Type': "application/json"},
+              body: dataJson
+            })
+
+            const res = await req.json()
+            //colocar msg de sistema
+
+            this.msg = `Pedido N° ${res.id} realizado com sucesso`
+
+            //limpar msg
+
+            setTimeout(() => {
+              return this.msg = ''
+            },3000)
+
+            //limpar campos
+            this.nome = ''
+            this.carne = ''
+            this.pao = ''
+            this.opcionais = [] 
+
+            console.log(res,req)
+        }
     },
     mounted(){
         this.getIngredientes()
         
+    },
+    components: {
+      Message
     }
     
   
   }
+  
   </script>
   
 
