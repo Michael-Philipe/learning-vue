@@ -8,11 +8,12 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'NavBar',
-  props: ['logo', 'alt'],
-};
+<script setup>
+  defineProps({
+    logo: String,
+    alt: String
+  })
+
 </script>
 
 <style scoped>

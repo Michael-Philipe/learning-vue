@@ -2,21 +2,14 @@
   <Banner/>
   <div class="main-container">
     <h1>Monte o seu burguer:</h1>
-    <BurguerForm></BurguerForm>
+    <BurguerForm/>
   </div>
 </template>
 
-<script>
+<script setup>
 import Banner from "@/components/Banner.vue"
 import BurguerForm from "@/components/BurguerForm.vue"
 
 
-export default {
 
-  
-  components: {
-    Banner,
-    BurguerForm
-  }
-}
 </script>

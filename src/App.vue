@@ -1,25 +1,19 @@
 <template>
-  <NavBar :logo="logo_src" :alt="app_name"/>
+  <NavBar :logo="data.logo_src" :alt="data.app_name"/>
   <router-view />
   <Footer />
 </template>
-<script>
+<script setup>
 import NavBar from '@/components/NavBar.vue';
 import Footer from '@/components/Footer.vue';
+import { ref } from 'vue';
 
-export default {
-  
-  components: {
-    NavBar,
-    Footer,
-  },
-  data(){
-    return {
-      logo_src: "/img/logo.png",
-      app_name: "Make your burguer"
-    }
-  }
-};
+const data = ref({
+  logo_src: "/img/logo.png",
+  app_name: "Make your burguers"
+})
+
+
 </script>
 
 <style>
