@@ -79,16 +79,27 @@
   ],
   "burgers": [
     {
-      "nome": "henrique",
-      "carne": "Maminha",
-      "pao": "3 Queijos",
+      "nome": "Natanael",
+      "carne": "Alcatra",
+      "pao": "Italiano Branco",
       "opcionais": [
+        "Bacon",
         "Tomate",
-        "Cebola roxa",
-        "Bacon"
+        "Cebola roxa"
       ],
-      "status": "Em produção",
+      "status": "Finalizado",
       "id": 1
+    },
+    {
+      "nome": "asdas",
+      "carne": "",
+      "pao": "Parmesão e Orégano",
+      "opcionais": [
+        "Bacon",
+        "Tomate"
+      ],
+      "status": "Soliciado",
+      "id": 5
     }
   ]
 }

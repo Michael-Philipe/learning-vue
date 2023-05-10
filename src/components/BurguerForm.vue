@@ -1,196 +1,202 @@
 <template>
-   <div>
-    <Message :msg="msg" v-show="msg"/>
+  <div>
+    <Message :msg="data.msg" v-show="data.msg" />
     <div>
-        <form id="burger-form" @submit.prevent="createBurger">
-            <div class="input-container">
-                <label for="name">Nome do cliente</label>
-                <input type="text" id="nome" name="name" v-model="nome" placeholder="Digite seu nome">
-            </div>
-            <div class="input-container">
-                <label for="pao">escolha seu pão</label>
-                <select for="pao" id="pao" v-model="pao">
-                    <option value="">selecione seu pao</option>
-                    <option v-for="pao in paes" :key="pao.id" :value="pao.tipo">
-                        {{ pao.tipo }}
-                    </option>
-                </select>
-            </div>
-            <div class="input-container">
-                <label for="carne">escolha a carne</label>
-                <select for="carne" id="carne" v-model="carne">
-                    <option value="">selecione sua carne</option>
-                    <option v-for="carne in carnes" :key="carne.id" :value="carne.tipo">
-                        {{ carne.tipo }}
-                    </option>
-                </select>
-            </div>
-            <div id="opcionais-container" class="input-container">
-                <label id="opcionais-title" for="opcionais">Selecione os opcionais</label>
-                <div v-for="opcional in opcionaisData" :key="opcional.id"  class="checkbox-container">
-                    <input type="checkbox" name="opcionais" v-model="opcionais" :value="opcional.tipo">
-                    <span>{{ opcional.tipo }}</span>
-                </div>
-               
-            </div>
-            <div class="input-container">
-                <input type="submit" class="submit-btn" value="Criar meu Burguer">
-            </div>
-        </form>
+      <form id="burger-form" @submit.prevent="createBurger">
+        <div class="input-container">
+          <label for="name">Nome do cliente</label>
+
+          <input
+            type="text"
+            id="nome"
+            name="name"
+            v-model="data.nome"
+            placeholder="Digite seu nome"
+          />
+        </div>
+        <div class="input-container">
+          <label for="pao">escolha seu pão</label>
+          <select for="pao" id="pao" v-model="data.pao">
+            <option value="">selecione seu pao</option>
+            <option v-for="pao in data.paes" :key="pao.id" :value="pao.tipo">
+              {{ pao.tipo }}
+            </option>
+          </select>
+        </div>
+        <div class="input-container">
+          <label for="carne">escolha a carne</label>
+          <select for="carne" id="carne" v-model="data.carne">
+            <option value="">selecione sua carne</option>
+            <option
+              v-for="carne in data.carnes"
+              :key="carne.id"
+              :value="carne.tipo"
+            >
+              {{ carne.tipo }}
+            </option>
+          </select>
+        </div>
+        <div id="opcionais-container" class="input-container">
+          <label id="opcionais-title" for="opcionais"
+            >Selecione os opcionais</label
+          >
+          <div
+            v-for="opcional in data.opcionaisData"
+            :key="opcional.id"
+            class="checkbox-container"
+          >
+            <input
+              type="checkbox"
+              name="opcionais"
+              v-model="data.opcionais"
+              :value="opcional.tipo"
+            />
+            <span>{{ opcional.tipo }}</span>
+          </div>
+        </div>
+        <div class="input-container">
+          <input type="submit" class="submit-btn" value="Criar meu Burguer" />
+        </div>
+      </form>
     </div>
-   </div>
-
+  </div>
 </template>
-  
-  <script>
-  import Message from '@/components/Message.vue'
-  
-  export default {
-   
 
-    data(){
-        return {
-            paes: '',
-            carnes: '',
-            opcionaisData: null,
-            nome: '',
-            pao: '',
-            carne: '',
-            opcionais: [],
-            msg: ''
-        }
+<script setup>
+import Message from '@/components/Message.vue';
+import { onMounted, ref } from 'vue';
 
-    },
-    methods: {
-        async getIngredientes(){
-            const req = await fetch('http://localhost:3000/ingredientes')
-            const data = await req.json()
+const data = ref({
+  paes: '',
+  carnes: '',
+  opcionaisData: null,
+  nome: '',
+  pao: '',
+  carne: '',
+  opcionais: [],
+  msg: '',
+});
 
-            this.paes = data.paes
-            this.carnes = data.carnes
-            this.opcionaisData = data.opcionais
+const getIngredientes = async () => {
+  const req = await fetch('http://localhost:3000/ingredientes');
+  const res = await req.json();
 
-            
-        },
-        async createBurger() {
-            
+  data.value.paes = res.paes;
+  data.value.carnes = res.carnes;
+  data.value.opcionaisData = res.opcionais;
+};
+const createBurger = async () => {
+  const inputData = {
+    nome: data.value.nome,
+    carne: data.value.carne,
+    pao: data.value.pao,
+    opcionais: Array.from(data.value.opcionais),
+    status: 'Soliciado',
+  };
 
-            const data = {
-              nome: this.nome,
-              carne: this.carne,
-              pao: this.pao,
-              opcionais: Array.from(this.opcionais),
-              status: "Soliciado"
-            }
+  const dataJson = JSON.stringify(inputData);
 
-            const dataJson = JSON.stringify(data)
+  const req = await fetch('http://localhost:3000/burgers', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: dataJson,
+  });
 
-            const req = await fetch("http://localhost:3000/burgers",{
-              method: 'POST',
-              headers: {'Content-Type': "application/json"},
-              body: dataJson
-            })
+  const res = await req.json();
+  //colocar msg de sistema
 
-            const res = await req.json()
-            //colocar msg de sistema
+  data.value.msg = `Pedido N° ${res.id} realizado com sucesso`;
 
-            this.msg = `Pedido N° ${res.id} realizado com sucesso`
+  //limpar msg
 
-            //limpar msg
+  setTimeout(() => {
+    return (data.value.msg = '');
+  }, 3000);
 
-            setTimeout(() => {
-              return this.msg = ''
-            },3000)
+  //limpar campos
+  data.value.nome = '';
+  data.value.carne = '';
+  data.value.pao = '';
+  data.value.opcionais = [];
+};
 
-            //limpar campos
-            this.nome = ''
-            this.carne = ''
-            this.pao = ''
-            this.opcionais = [] 
-
-            console.log(res,req)
-        }
-    },
-    mounted(){
-        this.getIngredientes()
-        
-    },
-    components: {
-      Message
-    }
-    
-  
-  }
-  
-  </script>
-  
+onMounted(() => {
+  getIngredientes();
+});
+</script>
 
 <style scoped>
-    #burger-form {
-    max-width: 400px;
-    margin: 0 auto;
-  }
+#burger-form {
+  max-width: 400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 
-  .input-container {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
-  }
+.input-container {
+  display: flex;
+  flex-direction: column;
 
-  label {
-    font-weight: bold;
-    margin-bottom: 15px;
-    color: #222;;
-    padding: 5px 10px;
-    border-left: 4px solid #fcba03;
-  }
+  width: 75%;
+  margin-bottom: 20px;
+}
 
-  input, select {
-    padding: 5px 10px;
-    width: 300px;
-  }
+label {
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #222;
+  padding: 5px 10px;
+  border-left: 4px solid #fcba03;
+}
 
-  #opcionais-container {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
+input,
+select {
+  padding: 5px 10px;
+  width: 300px;
+}
 
-  #opcionais-title {
-    width: 100%;
-  }
+#opcionais-container {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
 
-  .checkbox-container {
-    display: flex;
-    align-items: flex-start;
-    width: 50%;
-    margin-bottom: 20px;
-  }
+#opcionais-title {
+  width: 100%;
+}
 
-  .checkbox-container span,
-  .checkbox-container input {
-    width: auto;
-  }
+.checkbox-container {
+  display: flex;
+  align-items: flex-start;
+  width: 50%;
+  margin-bottom: 20px;
+}
 
-  .checkbox-container span {
-    margin-left: 6px;
-    font-weight: bold;
-  }
+.checkbox-container span,
+.checkbox-container input {
+  width: auto;
+}
 
-  .submit-btn {
-    background-color: #222;
-    color:#fcba03;
-    font-weight: bold;
-    border: 2px solid #222;
-    padding: 10px;
-    font-size: 16px;
-    margin: 0 auto;
-    cursor: pointer;
-    transition: .5s;
-  }
+.checkbox-container span {
+  margin-left: 6px;
+  font-weight: bold;
+}
 
-  .submit-btn:hover {
-    background-color: transparent;
-    color: #222;
-  }
+.submit-btn {
+  background-color: #222;
+  color: #fcba03;
+  font-weight: bold;
+  border: 2px solid #222;
+  padding: 10px;
+  font-size: 16px;
+  margin: 0 auto;
+  cursor: pointer;
+  transition: 0.5s;
+}
 
+.submit-btn:hover {
+  background-color: transparent;
+  color: #222;
+}
 </style>

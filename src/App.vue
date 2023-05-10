@@ -1,5 +1,5 @@
 <template>
-  <NavBar :logo="data.logo_src" :alt="data.app_name"/>
+  <NavBar :logo="data.logo_src" :alt="data.app_name" />
   <router-view />
   <Footer />
 </template>
@@ -9,11 +9,9 @@ import Footer from '@/components/Footer.vue';
 import { ref } from 'vue';
 
 const data = ref({
-  logo_src: "/img/logo.png",
-  app_name: "Make your burguers"
-})
-
-
+  logo_src: '/img/logo.png',
+  app_name: 'Make your burguers',
+});
 </script>
 
 <style>
@@ -24,8 +22,13 @@ const data = ref({
   box-sizing: border-box;
 }
 
+#app {
+  position: relative;
+  min-height: 100vh;
+}
+
 .main-container {
-  margin: 50px;
+  padding: 50px 50px 200px;
   min-height: 250px;
 }
 
@@ -35,5 +38,4 @@ h1 {
   margin-bottom: 30px;
   color: #222;
 }
-
 </style>
